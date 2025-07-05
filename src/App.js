@@ -18,7 +18,7 @@ function App() {
 
   //info = {id,name,job}
   const handleSubmit = () => {
-    // console.log(todos);
+    console.log(todos);
 
     if (job.trim() === "" || name.trim() === "") return;
 
@@ -26,7 +26,7 @@ function App() {
       setTodos([
         ...todos,
         {
-          id: Math.floor(Math.random() * 100 + 1) - new Date().getFullYear(),
+          id: Math.floor(Math.random() * 100 + 1) + "-" + new Date().getTime(),
           name: name,
           job: job,
         },
