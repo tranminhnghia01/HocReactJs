@@ -37,19 +37,18 @@ function App() {
       let todoEdit = todos;
       console.log(Edit.id);
 
-      todos.map((item) => {
+      todoEdit.map((item) => {
         if (item.id === Edit.id) {
           item.name = name;
           item.job = job;
         }
       });
 
-      setTodos(todos);
-      setEdit("");
-      setJob("");
-      setName("");
-      console.log(todos);
+      setTodos(todoEdit);
     }
+    setEdit("");
+    setJob("");
+    setName("");
   };
 
   // id: Math.floor(Math.random() * 100 + 1),
