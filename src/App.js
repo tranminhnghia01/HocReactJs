@@ -1,23 +1,120 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useState } from "react";
 
 function App() {
+  const [todos, setTodos] = useState([]);
+  const [job, setJob] = useState("");
+  const [name, setName] = useState("");
+  const [Edit, setEdit] = useState([]);
+
+  const handleChangeInput = (e) => {
+    setJob(e.target.value);
+  };
+
+  const handleChangeName = (e) => {
+    setName(e.target.value);
+  };
+
+  //info = {id,name,job}
+  const handleSubmit = () => {
+    // console.log(todos);
+
+    if (job.trim() === "" || name.trim() === "") return;
+
+    if (Edit == "") {
+      setTodos([
+        ...todos,
+        {
+          id: Math.floor(Math.random() * 100 + 1),
+          name: name,
+          job: job,
+        },
+      ]);
+    } else {
+      console.log(todos);
+
+      let todoEdit = todos;
+      console.log(Edit.id);
+
+      todos.map((item) => {
+        if (item.id === Edit.id) {
+          item.name = name;
+          item.job = job;
+        }
+      });
+
+      setTodos(todos);
+      setEdit("");
+      setJob("");
+      setName("");
+      console.log(todos);
+    }
+  };
+
+  // id: Math.floor(Math.random() * 100 + 1),
+
+  const handleEditTodo = (id) => {
+    setEdit({ isEdit: true, id: id });
+    let todoEdit = todos;
+    todoEdit.map((item) => {
+      if (item.id === id) {
+        setJob(item.job);
+        setName(item.name);
+      }
+    });
+  };
+
+  const handleDelete = (id) => {
+    console.log(id);
+    let todosclone = todos;
+    todosclone = todosclone.filter((item) => item.id !== id);
+    setTodos(todosclone);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ margin: "40px" }}>
+      <h1> Todo List</h1>
+      <input
+        type="text"
+        value={name}
+        placeholder="Tên :"
+        onChange={(e) => {
+          handleChangeName(e);
+        }}
+      />
+
+      <input
+        type="text"
+        value={job}
+        placeholder="Thêm việc cần làm..."
+        onChange={(e) => {
+          handleChangeInput(e);
+        }}
+      />
+      <button onClick={handleSubmit}>Thêm</button>
+
+      <ul>
+        {todos.map((item) => (
+          <li key={item.id}>
+            <span style={{ cursor: "pointer" }}>{item.name} :</span>
+            <span style={{ cursor: "pointer" }}>{item.job}</span>
+            <button
+              style={{ marginLeft: "10px" }}
+              onClick={() => {
+                handleEditTodo(item.id);
+              }}
+            >
+              ✏️ Sửa
+            </button>
+            <button
+              style={{ marginLeft: "10px" }}
+              onClick={() => handleDelete(item.id)}
+            >
+              ❌
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
