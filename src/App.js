@@ -26,17 +26,14 @@ function App() {
       setTodos([
         ...todos,
         {
-          id: Math.floor(Math.random() * 100 + 1),
+          id: Math.floor(Math.random() * 100 + 1) - new Date().getFullYear(),
           name: name,
           job: job,
         },
       ]);
     } else {
-      console.log(todos);
-
+      // console.log(todos);
       let todoEdit = todos;
-      console.log(Edit.id);
-
       todoEdit.map((item) => {
         if (item.id === Edit.id) {
           item.name = name;
@@ -90,7 +87,7 @@ function App() {
           handleChangeInput(e);
         }}
       />
-      <button onClick={handleSubmit}>Thêm</button>
+      <button onClick={handleSubmit}>{Edit == "" ? "Thêm" : "Cập nhật"}</button>
 
       <ul>
         {todos.map((item) => (
