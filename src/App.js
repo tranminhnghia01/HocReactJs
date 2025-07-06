@@ -1,12 +1,20 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(() => {
+    const todostarts = localStorage.getItem("todos");
+    return todostarts ? JSON.parse(todostarts) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+
   const [job, setJob] = useState("");
   const [name, setName] = useState("");
-  const [Edit, setEdit] = useState([]);
+  const [Edit, setEdit] = useState({ isEdit: false, id: null });
 
   const handleChangeInput = (e) => {
     setJob(e.target.value);
@@ -18,47 +26,50 @@ function App() {
 
   //info = {id,name,job}
   const handleSubmit = () => {
-    console.log(todos);
-
-    if (job.trim() === "" || name.trim() === "") return;
-
-    if (Edit == "") {
-      setTodos([
-        ...todos,
-        {
-          id: Math.floor(Math.random() * 100 + 1) + "-" + new Date().getTime(),
-          name: name,
-          job: job,
-        },
-      ]);
-    } else {
-      // console.log(todos);
-      let todoEdit = todos;
-      todoEdit.map((item) => {
-        if (item.id === Edit.id) {
-          item.name = name;
-          item.job = job;
-        }
-      });
-
-      setTodos(todoEdit);
+    if (job.trim() === "" || name.trim() === "") {
+      alert("Vui lòng nhập đầu đủ thông tin");
+      return;
     }
-    setEdit("");
+    let UpdateTodos = [];
+    if (Edit.isEdit == false) {
+      const newTodo = {
+        id: Math.floor(Math.random() * 100 + 1) + "-" + new Date().getTime(),
+        name: name,
+        job: job,
+      };
+
+      UpdateTodos = [...todos, newTodo];
+    } else {
+      UpdateTodos = [...todos];
+      for (let i = 0; i < UpdateTodos.length; i++) {
+        if (UpdateTodos[i].id === Edit.id) {
+          UpdateTodos[i] = { ...UpdateTodos[i], name: name, job: job };
+          // UpdateTodos[i].name = name;
+          // UpdateTodos[i].job = job;
+          break;
+        }
+      }
+    }
+    setTodos(UpdateTodos);
+
+    setEdit({ isEdit: false, id: null });
     setJob("");
     setName("");
+    // localStorage.setItem("todos", JSON.stringify(UpdateTodos));
   };
-
-  // id: Math.floor(Math.random() * 100 + 1),
 
   const handleEditTodo = (id) => {
     setEdit({ isEdit: true, id: id });
     let todoEdit = todos;
-    todoEdit.map((item) => {
-      if (item.id === id) {
-        setJob(item.job);
-        setName(item.name);
+    console.log(todoEdit);
+
+    for (let i = 0; i < todoEdit.length; i++) {
+      if (todoEdit[i].id === id) {
+        setJob(todoEdit[i].job);
+        setName(todoEdit[i].name);
+        break;
       }
-    });
+    }
   };
 
   const handleDelete = (id) => {
@@ -66,6 +77,7 @@ function App() {
     let todosclone = todos;
     todosclone = todosclone.filter((item) => item.id !== id);
     setTodos(todosclone);
+    // localStorage.setItem("todos", JSON.stringify(todosclone));
   };
   return (
     <div style={{ margin: "40px" }}>
@@ -87,7 +99,9 @@ function App() {
           handleChangeInput(e);
         }}
       />
-      <button onClick={handleSubmit}>{Edit == "" ? "Thêm" : "Cập nhật"}</button>
+      <button onClick={handleSubmit}>
+        {Edit.isEdit ? "Cập nhật" : "Thêm"}
+      </button>
 
       <ul>
         {todos.map((item) => (
