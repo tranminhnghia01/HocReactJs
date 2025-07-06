@@ -1,7 +1,21 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  Button,
+  Col,
+  Divider,
+  Form,
+  Input,
+  List,
+  Row,
+  Select,
+  Space,
+  Typography,
+} from "antd";
+
+const { Title, Text } = Typography;
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   const [todos, setTodos] = useState(() => {
@@ -113,87 +127,127 @@ function App() {
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4">📝 Todo List</h2>
+    <Col>
+      <Title level={1}>📝 Danh sách công việc</Title>
 
-      <div className="row g-3 mb-3">
+      <Row gutter={[8, 8]}>
         {/* Input Name */}
-        <div className="col-md-3">
-          <input
+        <Col span="6">
+          <Input
             type="text"
-            className="form-control"
             value={name}
             placeholder="Tên :"
             onChange={(e) => {
               handleChangeName(e);
             }}
           />
-        </div>
+        </Col>
 
         {/* Input Job */}
 
-        <div className="col-md-3">
-          <input
+        <Col span="6">
+          <Input
             type="text"
-            className="form-control"
             value={job}
             placeholder="Thêm việc cần làm..."
             onChange={(e) => {
               handleChangeInput(e);
             }}
           />
-        </div>
+        </Col>
 
         {/* Input Date Time */}
-        <div className="col-md-3">
-          <input
+        <Col span="6">
+          <Input
             type="datetime-local"
-            className="form-control"
             value={dateTime}
             onChange={(e) => setDateTime(e.target.value)}
           />
-        </div>
+        </Col>
 
         {/* Input select Option */}
 
-        <div className="col-md-2">
-          <select
-            className="form-select"
+        <Col span="6">
+          <Select
+            style={{ width: "50%" }}
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option value="study">Học tập</option>
-            <option value="work">Công việc</option>
-            <option value="other">Khác</option>
-          </select>
-        </div>
+            defaultValue={"study"}
+            onChange={(value) => setCategory(value)}
+            options={[
+              { value: "study", label: "Học tập" },
+              { value: "word", label: "Công việc" },
+              { value: "other", label: "Khác" },
+            ]}
+          />
+        </Col>
 
-        {/* Input ghi chú */}
-        <div className="col-md-3">
-          <input
+        <Col span="6">
+          <Input
             type="text"
             value={note}
-            className="form-control"
             placeholder="Thêm ghi chú..."
             onChange={(e) => setNote(e.target.value)}
           />
-        </div>
-
-        <div className="col-md-2">
-          <button className="btn btn-primary w-100" onClick={handleSubmit}>
+        </Col>
+      </Row>
+      <Row gutter={[8, 8]} style={{ marginTop: "8px" }}>
+        <Col span="6">
+          <Button
+            color="primary"
+            variant="solid"
+            style={{ width: "30%", marginRight: "10px" }}
+            onClick={handleSubmit}
+          >
             {Edit.isEdit ? "Cập nhật" : "Thêm"}
-          </button>
-        </div>
-        <div className="col-md-2">
-          <button
-            className="btn btn-outline-danger w-100"
+          </Button>
+          <Button
+            color="danger"
+            variant="solid"
+            style={{ width: "30%" }}
             onClick={() => handleDeleteAll()}
           >
             ❌ Xóa hết
-          </button>
-        </div>
-      </div>
-      <ul className="list-group">
+          </Button>
+        </Col>
+      </Row>
+
+      <Divider orientation="left">Danh sách</Divider>
+      <List
+        // header={<div>Header</div>}
+        // footer={<div>Footer</div>}
+        // bordered
+        dataSource={todos
+          .slice()
+          .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))}
+        renderItem={(item) => (
+          <List.Item key={item.id}>
+            <Space style={{ justifyContent: "space-between", width: "100%" }}>
+              <Title level={4}> 👤 Họ tên: {item.name} </Title>
+
+              <Text>Nghề nghiệp :{item.job}</Text>
+              <Text>Ghi chú về :{item.category || "Trống"}</Text>
+              <Text>Nội dung :{item.note || "Không có ghi chú"}</Text>
+              <Text type="secondary">
+                📅
+                {item.dateTime
+                  ? new Date(item.dateTime).toLocaleString()
+                  : "Trống"}
+              </Text>
+            </Space>
+            <Button
+              color="pink"
+              variant="outline"
+              onClick={() => handleEditTodo(item.id)}
+            >
+              ✏️ Sửa
+            </Button>
+            <Button danger onClick={() => handleDelete(item.id)}>
+              ❌ Xóa
+            </Button>
+          </List.Item>
+        )}
+      />
+      {/* <ul className="list-group">
         {todos
           .slice()
           .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))
@@ -239,8 +293,8 @@ function App() {
               </div>
             </li>
           ))}
-      </ul>
-    </div>
+      </ul> */}
+    </Col>
   );
 }
 
