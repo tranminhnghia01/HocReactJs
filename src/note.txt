@@ -1,0 +1,118 @@
+
+      <Row gutter={[8, 8]}>
+        {/* Input Name */}
+        <Col span="6">
+          <Input
+            type="text"
+            value={name}
+            placeholder="Tên :"
+            onChange={(e) => {
+              handleChangeName(e);
+            }}
+          />
+        </Col>
+
+        {/* Input Job */}
+
+        <Col span="6">
+          <Input
+            type="text"
+            value={job}
+            placeholder="Thêm việc cần làm..."
+            onChange={(e) => {
+              handleChangeInput(e);
+            }}
+          />
+        </Col>
+
+        {/* Input Date Time */}
+        <Col span="6">
+          <Input
+            type="datetime-local"
+            value={dateTime}
+            onChange={(e) => setDateTime(e.target.value)}
+          />
+        </Col>
+
+        {/* Input select Option */}
+
+        <Col span="6">
+          <Select
+            style={{ width: "50%" }}
+            value={category}
+            defaultValue={"study"}
+            onChange={(value) => setCategory(value)}
+            options={[
+              { value: "study", label: "Học tập" },
+              { value: "word", label: "Công việc" },
+              { value: "other", label: "Khác" },
+            ]}
+          />
+        </Col>
+
+        <Col span="6">
+          <Input
+            type="text"
+            value={note}
+            placeholder="Thêm ghi chú..."
+            onChange={(e) => setNote(e.target.value)}
+          />
+        </Col>
+      </Row>
+      <Row gutter={[8, 8]} style={{ marginTop: "8px" }}>
+        <Col span="6">
+          <Button
+            color="primary"
+            variant="solid"
+            style={{ width: "30%", marginRight: "10px" }}
+            onClick={handleSubmit}
+          >
+            {Edit.isEdit ? "Cập nhật" : "Thêm"}
+          </Button>
+          <Button
+            color="danger"
+            variant="solid"
+            style={{ width: "30%" }}
+            onClick={() => handleDeleteAll()}
+          >
+            ❌ Xóa hết
+          </Button>
+        </Col>
+      </Row>
+
+      <Divider orientation="left">Danh sách</Divider>
+      <List
+        // header={<div>Header</div>}
+        // footer={<div>Footer</div>}
+        bordered
+        dataSource={todos
+          .slice()
+          .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))}
+        renderItem={(item) => (
+          <List.Item key={item.id}>
+            <Space style={{ justifyContent: "space-between", width: "100%" }}>
+              <Title level={4}> 👤 Họ tên: {item.name} </Title>
+
+              <Text>Nghề nghiệp :{item.job}</Text>
+              <Text>Ghi chú về :{item.category || "Trống"}</Text>
+              <Text>Nội dung :{item.note || "Không có ghi chú"}</Text>
+              <Text type="secondary">
+                📅
+                {item.dateTime
+                  ? new Date(item.dateTime).toLocaleString()
+                  : "Trống"}
+              </Text>
+            </Space>
+            <Button
+              color="pink"
+              variant="outline"
+              onClick={() => handleEditTodo(item.id)}
+            >
+              ✏️ Sửa
+            </Button>
+            <Button danger onClick={() => handleDelete(item.id)}>
+              ❌ Xóa
+            </Button>
+          </List.Item>
+        )}
+      />
